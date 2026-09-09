@@ -1,0 +1,6 @@
+.git
+target
+*.md
+*.pdf
+.vscode
+.idea
