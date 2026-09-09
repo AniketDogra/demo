@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Transfer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-color), #1e1b4b);
+            color: var(--text-color);
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .result.success {
+            border-left: 4px solid var(--success-color);
+            display: block;
+        }
+
+        .result.error {
+            border-left: 4px solid var(--error-color);
+            display: block;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wallet Dashboard</h1>
+            <p>Peer-to-Peer Transfer Service</p>
+        </header>
+
+        <div class="grid">
+            <!-- Create Wallet Card -->
+            <div class="card">
+                <h2>🏦 Get or Create Wallet</h2>
+                <div class="form-group">
+                    <label>User ID (Bearer Token)</label>
+                    <input type="text" id="create-user" placeholder="e.g. alice-123">
+                </div>
+                <div class="form-group">
+                    <label>Initial Balance (Paise)</label>
+                    <input type="number" id="create-balance" value="0">
+                </div>
+                <button onclick="createWallet()">Create Wallet</button>
+                <div id="create-result" class="result"></div>
+            </div>
+
+            <!-- Get Wallet Card -->
+            <div class="card">
+                <h2>🔍 Check Balance</h2>
+                <div class="form-group">
+                    <label>Wallet ID</label>
+                    <input type="number" id="get-wallet-id" placeholder="e.g. 1">
+                </div>
+                <button onclick="getWallet()">Check Balance</button>
+                <div id="get-wallet-result" class="result"></div>
+            </div>
+
+            <!-- Transfer Card -->
+            <div class="card" style="grid-column: 1 / -1; max-width: 600px; justify-self: center; width: 100%;">
+                <h2>💸 Make Transfer</h2>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Sender User ID (Bearer)</label>
+                        <input type="text" id="transfer-user" placeholder="e.g. alice-123">
+                    </div>
+                    <div class="form-group">
+                        <label>Idempotency Key</label>
+                        <input type="text" id="transfer-key" placeholder="UUID">
+                    </div>
+                    <div class="form-group">
+                        <label>From Wallet ID</label>
+                        <input type="number" id="transfer-from">
+                    </div>
+                    <div class="form-group">
+                        <label>To Wallet ID</label>
+                        <input type="number" id="transfer-to">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Amount (Paise)</label>
+                        <input type="number" id="transfer-amount">
+                    </div>
+                </div>
+                <button onclick="document.getElementById('transfer-key').value = crypto.randomUUID(); makeTransfer();">Transfer Funds</button>
+                <div id="transfer-result" class="result"></div>
+            </div>
+            
+            <div style="grid-column: 1 / -1; text-align: center; margin-top: 1rem;">
+                <a href="/swagger-ui.html" style="color: var(--primary-color); text-decoration: none;">View API Docs (Swagger)</a> | 
+                <a href="/actuator/prometheus" style="color: var(--primary-color); text-decoration: none;">View Metrics</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = window.location.origin;
+
+        async function fetchApi(endpoint, options, resultEl) {
+            try {
+                const response = await fetch(`${baseUrl}${endpoint}`, options);
+                const data = await response.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+                resultEl.className = 'result ' + (response.ok ? 'success' : 'error');
+            } catch (err) {
+                resultEl.textContent = err.message;
+                resultEl.className = 'result error';
+            }
+        }
+
+        function createWallet() {
+            const user = document.getElementById('create-user').value;
+            const balance = document.getElementById('create-balance').value;
+            fetchApi('/wallets', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user}`
+                },
+                body: JSON.stringify({ initial_balance: parseInt(balance) })
+            }, document.getElementById('create-result'));
+        }
+
+        function getWallet() {
+            const id = document.getElementById('get-wallet-id').value;
+            fetchApi(`/wallets/${id}`, {
+                method: 'GET'
+            }, document.getElementById('get-wallet-result'));
+        }
+
+        function makeTransfer() {
+            const user = document.getElementById('transfer-user').value;
+            const key = document.getElementById('transfer-key').value;
+            const from = document.getElementById('transfer-from').value;
+            const to = document.getElementById('transfer-to').value;
+            const amount = document.getElementById('transfer-amount').value;
+
+            fetchApi('/transfers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user}`,
+                    'Idempotency-Key': key
+                },
+                body: JSON.stringify({
+                    from_wallet_id: parseInt(from),
+                    to_wallet_id: parseInt(to),
+                    amount_paise: parseInt(amount)
+                })
+            }, document.getElementById('transfer-result'));
+        }
+    </script>
+</body>
+</html>
