@@ -15,9 +15,14 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorrelationIdFilter implements Filter {
+
+    private static final Logger log = LoggerFactory.getLogger(CorrelationIdFilter.class);
 
     private static final String HEADER = "X-Correlation-Id";
 
@@ -36,9 +41,15 @@ public class CorrelationIdFilter implements Filter {
         MDC.put("correlationId", correlationId);
         httpRes.setHeader(HEADER, correlationId);
 
+        long startTime = System.currentTimeMillis();
+        log.info("Incoming {} {}", httpReq.getMethod(), httpReq.getRequestURI());
+
         try {
             chain.doFilter(request, response);
         } finally {
+            long duration = System.currentTimeMillis() - startTime;
+            log.info("Completed {} {} with status {} in {}ms", 
+                     httpReq.getMethod(), httpReq.getRequestURI(), httpRes.getStatus(), duration);
             MDC.remove("correlationId");
         }
     }
